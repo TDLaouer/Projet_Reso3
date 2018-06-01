@@ -1,0 +1,19 @@
+Comment utiliser le parseur ? 
+
+- Ce parseur respecte l'api demandé à l'étape 2, utiliser ce nouveau parseur est donc normalement très facile. 
+ main-etape3.c est un exemple dutilisation du parseur 
+ libparser.so est le parseur fourni sous forme de biliothèque. 
+ api.h est le fichier d'interface 
+ Le fichier httpparser.h revele la structure interne d'un neoud de l'arbre formé par les éléments du parseur, ce qui evite d'avoir à utiliser le type opaque pour masquer les details d'implémentation. 
+	
+	notez que la racine est de type Lnode * et non plus void * ce qui permet d'acceder directement aux champs utiles (nom et valeur)  sans repasser par les 2 fonctions de l'api (getElementTag et getElementValue) 
+
+	notez que dans Lnode par construction le champ char *name (le nom du token) implémente la sentinelle en fin de chaine, mais non pas le champ value.(dont la taille est effectivement prcisée par le champ len) 
+
+Compilation 
+	installer libparser.so dans un répertoire (exemple .) 
+	lors de la compilation il faut préciser ou trouver cette bibliothèque par l'utilisation des options -L. -lparser 
+	lors de l'execution il faut indiquer ou trouver cette bibliothèque par l'utilisation de la variable d'environnement LD_LIBRARY_PATH 
+		export LD_LIBRARY_PATH=.
+
+
