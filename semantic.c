@@ -148,6 +148,7 @@ int VerifHost (char* answer){
   if (count != 1 || count != 0)
   {
     strcpy(answer, "HTTP/1.1 400 Bad request\r\n");
+    return -1;
   }
   if (count == 0)
     return 0;
