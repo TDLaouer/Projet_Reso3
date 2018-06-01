@@ -257,8 +257,6 @@ int VerifConnection (char* answer){
 
   else if (list)
 
-
-	/* On aura forc�ment pass� la verifVersion a ce moment */
 	if (strcmp(connection, "close") != 0 && strcmp(connection, "keep-alive") != 0 && strlen(connection) != 0){
 		strcpy(theresponse, "HTTP/1.1 400 Bad Request\r\n");
 		return 0;
