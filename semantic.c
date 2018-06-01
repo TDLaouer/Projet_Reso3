@@ -111,7 +111,7 @@ void verifUserAgent ( _Token * list){
 
 
 /* nécésite unicité */
-void verifTrasfertEncoding ( _Token * list){
+void verifTransferEncoding ( _Token * list){
   /*test unicité*/
   /*non unique "400 bad request"????????????*/
 
