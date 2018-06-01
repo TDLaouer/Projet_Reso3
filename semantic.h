@@ -1,34 +1,43 @@
 #ifndef SEMANTIC_H
 #define SEMANTIC_H
 
+#include "api.h"
+#include "httpparser.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include "request.h"
 
-char* Semantique(Node * root);
+char* Semantique(Lnode * root);
 
-int CountToken ( _Token * list);
+int CountToken (_Token * list);
 
-void VerifMethod ( _Token * list);
+int VerifMethod ( char* answer);
 
-void VerifTarget ( _Token * list);
+int VerifTarget ( char* answer);
 
-void VerifHTTPVersion ( _Token * list);
+int VerifHTTPVersion ( char* answer);
 
-void VerifHost ( _Token * list);
+int VerifHost (char* answer);
 
-void verifAccept ( _Token * list);
+int verifAccept ( char* answer);
 
-void verifAcceptEncoding ( _Token * list);
+int verifAcceptEncoding (char* answer);
 
-void verifUserAgent ( _Token * list);
+int verifUserAgent ( char* answer);
 
-void verifTransferEncoding ( _Token * list);
+int verifTransferEncoding (char* answer);
 
-void VerifCookie ( _Token * list);
+int VerifCookie (char* answer);
 
-void VerifReferer ( _Token * list);
+int VerifReferer (char* answer);
 
-void VerifContentLength ( _Token * list);
+int VerifContentLength (char* answer);
 
-void VerifConnection ( _Token * list);
+int VerifConnection (char* answer);
 
 
 

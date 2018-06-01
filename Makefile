@@ -1,7 +1,9 @@
 BIN = executable
 OBJECTS = main.o semantic.o
 CC = gcc
+CFLAGS = -Wall -pedantic
 
+export LD_LIBRARY_PATH =.
 
 all: 	$(OBJECTS)
 	gcc $(OBJECTS) -o $(BIN) -L. -lrequest -lparser
