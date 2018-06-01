@@ -6,6 +6,7 @@ char* Semantique(Lnode * root){
   char* answer = calloc(taille, sizeof(char));
   int result;
 
+  strcpy(answer, "HTTP/1.1 200 Ok\r\n");
 
   result = VerifHTTPVersion(list, answer);
   if (result == -1)
@@ -18,10 +19,10 @@ char* Semantique(Lnode * root){
   else if (result == 2)
   {
     result = verifHost(list, answer);
+    if (result == -1)
+      return answer;
   }
 }
-
-
 
 /* permettra de compter les token de réponse en cas de preuve d'unicité*/
 int CountToken (_Token * list){
@@ -141,37 +142,50 @@ int VerifHTTPVersion (char* answer){
 
 /* nécésite unicité ??????????????????????????????????????????????????? */
 int VerifHost (char* answer){
+  _Token* list = searchTree(getRootTree(), "host");
   int count = CountToken(list);
-  if (count == 0)
-    return 0;
+  char* version = calloc(40, sizeof(char));
 
   if (count != 1 || count != 0)
   {
     strcpy(answer, "HTTP/1.1 400 Bad request\r\n");
     return -1;
   }
-  if (count == 0)
-    return 0;
-  /*si faux "400 bad request"????????????*/
+  else if (count == 0 && VerifHTTPVersion(version) == 2)
+  {
+    strcpy(answer, "HTTP/1.1 400 Bad request\r\n");
+    return -1;
+  }
   return 1;
 }
 
+  /*si faux "400 bad request"????????????*/
+  return 1;
+}
 
 /* nécésite unicité */
 int verifAccept (char* answer){
   /*test unicité*/
   /*non unique "400 bad request"????????????*/
+  _Token *list = searchTree(getRootTree(), "Accept");
+  int count = CountToken(list);
+  if(count > 0)
+  {
 
+
+  }
   /*vérification reste si présent*/
   return 1;
 }
+
 
 
 /* nécésite unicité */
 int verifAcceptEncoding (char* answer){
   /*test unicité*/
   /*non unique "400 bad request"????????????*/
-
+  _Token *list = searchTree(getRootTree(), "Accept-Encoding");
+  int count = CountToken(list);
   /*vérification reste si présent*/
   return 1;
 }
@@ -181,7 +195,8 @@ int verifAcceptEncoding (char* answer){
 int verifUserAgent (char* answer){
   /*test unicité*/
   /*non unique "400 bad request"????????????*/
-
+  _Token *list = searchTree(getRootTree(), "User-Agent");
+  int count = CountToken(list);
   /*vérification reste si présent*/
   return 1;
 }
@@ -191,43 +206,79 @@ int verifUserAgent (char* answer){
 int verifTransferEncoding (char* answer){
   /*test unicité*/
   /*non unique "400 bad request"????????????*/
-
+  _Token *list = searchTree(getRootTree(), "Transfer-Encoding");
+  int count = CountToken(list);
   /*vérification reste si présent*/
   return 1;
 }
 
 
 /* nécésite unicité */
-int VerifCookie (char* answer, _Token * list){
+int VerifCookie (char* answer){
   /*test unicité*/
   /*non unique "400 bad request"????????????*/
-
+  _Token *list = searchTree(getRootTree(), "Cookie??????");// <<-----  HELP oskour
+  int count = CountToken(list);
   /*vérification reste si présent*/
   return 1;
 }
 
 
 /* nécésite unicité */
-int VerifReferer (char* answer, _Token * list){
+int VerifReferer (char* answer){
   /*test unicité*/
   /*non unique "400 bad request"????????????*/
-
+  _Token *list = searchTree(getRootTree(), "Referer");
+  int count = CountToken(list);
   /*vérification reste si présent*/
   return 1;
 }
 
 
 /* nécésite unicité ??????????????????????????????????????????????????? */
-int VerifContentLength (char* answer, _Token * list){
-
+int VerifContentLength (char* answer){
+  _Token *list = searchTree(getRootTree(), "Content-Length");
+  int count = CountToken(list);
   /*si faux "400 bad request"????????????*/
   return 1;
 }
 
 
 /* nécésite unicité ??????????????????????????????????????????????????? */
-int VerifConnection (char* answer, _Token * list){
+int VerifConnection (char* answer){
+  strcpy(connection, Print_Table("Connection"));
+	strcpy(version, Print_Table("version"));
 
+  _Token* list = searchTree(getRootTree(), "connection");
+  int count = CountToken(list);
+
+  if (count == 0)
+    return 0;
+
+  else if (list)
+
+
+	/* On aura forc�ment pass� la verifVersion a ce moment */
+	if (strcmp(connection, "close") != 0 && strcmp(connection, "keep-alive") != 0 && strlen(connection) != 0){
+		strcpy(theresponse, "HTTP/1.1 400 Bad Request\r\n");
+		return 0;
+	}
+	else if (strcmp(connection, "close") == 0) {
+
+		return 1;
+	}
+
+	else if (version[2] == '1' && version[0] == '1') {
+		return 2;
+	}
+
+	else if (strcmp(connection, "keep-alive") == 0) {
+		return 2;
+	}
+
+	else{
+		return 1;
+	}
   /*si faux "400 bad request"????????????*/
   return 1;
 }
