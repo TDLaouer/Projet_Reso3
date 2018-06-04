@@ -3,7 +3,7 @@
 typedef struct node {
 		int level;
 		char *name;
-		char *value;
+		char *value ;
 		int len;
 		int explored;
 		struct node *link;

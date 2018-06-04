@@ -1,44 +1,38 @@
 #ifndef SEMANTIC_H
 #define SEMANTIC_H
-
-#include "api.h"
-#include "httpparser.h"
+#define MAX 150
+#include "request.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include "request.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <errno.h>
+#include "semantic.h"
+// this will declare internal type used by the parser
+#include "httpparser.h"
 
-char* Semantique(Lnode * root);
+#include "api.h"
 
-int CountToken (_Token * list);
-
-int VerifMethod ( char* answer);
-
-int VerifTarget ( char* answer);
-
-int VerifHTTPVersion ( char* answer);
-
-int VerifHost (char* answer);
-
-int verifAccept ( char* answer);
-
-int verifAcceptEncoding (char* answer);
-
-int verifUserAgent ( char* answer);
-
-int verifTransferEncoding (char* answer);
-
-int VerifCookie (char* answer);
-
-int VerifReferer (char* answer);
-
-int VerifContentLength (char* answer);
-
-int VerifConnection (char* answer);
-
-
+int BigHost(char* p);
+int Connection(char *p );
+int cookie(char*p);
+int TransferEnco(char *p);
+int contentlenght(char* p);
+int method(char *p);
+int version2(char *p);
+int version1(char *p);
+int version(char *p);
+int host(char* p);
+int Connection2(char *p );
+int originform(char* p);
+int Verification();
+int mediarange(char* p, char* monfichier);
+int lecturefich(char *monFichier, char* montype);
+int co(char*);
+char * returnInChar(int val);
 
 #endif
