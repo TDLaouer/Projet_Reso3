@@ -31,7 +31,7 @@ int Connection2(char *p );
 int originform(char* p);
 int Verification();
 int mediarange(char* p, char* monfichier);
-int lecturefich(char *monFichier, char* montype);
+int lecturefich(char *monFichier, char* montype, int len);
 int co(char*);
 char * returnInChar(int val);
 

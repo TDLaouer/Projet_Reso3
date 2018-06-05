@@ -354,6 +354,7 @@ int Verification(){
 
 
 char * returnInChar(int val){
+	printf("vaaaaaaaaaaaaaaal : %d\n", val);
 	if (val == 501){
 		return "HTTP/1.1 501 Not Implemented\0";
 	}else if (val == 505){
