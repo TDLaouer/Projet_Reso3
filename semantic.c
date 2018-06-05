@@ -18,12 +18,10 @@ int Connection(char *p ){
 		}
 		tok=tok->next;
 		}
-		purgeElement(&r);
-		purgeTree(root);
+		
 	}
 return(200);
 }
-
 
 
 
@@ -33,6 +31,7 @@ int Connection2(char *p ){
 	Lnode *root;Lnode *node;
 	root=getRootTree();
 	if (p != NULL) {
+		
 		r=searchTree(root,p);
 		tok=r;
 		while(tok){
@@ -43,8 +42,8 @@ int Connection2(char *p ){
 		}
 		tok=tok->next;
 		}
-		purgeElement(&r);
-		purgeTree(root);
+		/*purgeElement(&r);
+		purgeTree(root);*/
 	}
 return(200);
 }
@@ -60,7 +59,7 @@ int BigHost(char* p){
 		r=searchTree(root,p);
 		if(r==NULL){return(0);}
 		tok=r;
-
+		printf("coucu\n");
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
 /*		purgeElement(&r);
@@ -91,7 +90,8 @@ int host(char* p){
 	root=getRootTree();
 	if (p != NULL) {
 		r=searchTree(root,p);
-		if(r==NULL){return(0);}
+		
+		if(r==NULL){printf("cpiji\n");return(0);}
 		tok=r;
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
@@ -105,15 +105,15 @@ int originform(char* p){
 	_Token *r,*tok;
 	Lnode *root;Lnode *node;
 	root=getRootTree();
-
+	
 	if (p != NULL) {
 		r=searchTree(root,p);
-		if(r==NULL){return(501);}
+		
+		if(r==NULL)return(501);
 		tok=r;
-
+		
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
-
 	}
 	return(200);
 }
@@ -130,9 +130,8 @@ int version(char *p){
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
 
-		purgeElement(&r);
-		purgeTree(root);
-
+	/*purgeElement(&r);
+		purgeTree(root);*/
 		if(tok->next!=NULL)return(400);
 		if( strcmp(node->value,"HTTP") != 0)return(400);
 	}
@@ -145,14 +144,15 @@ int version1(char *p){
 	root=getRootTree();
 	if (p != NULL) {
 		r=searchTree(root,p);
+		
 		tok=r;
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
 		if(tok->next!=NULL)return(400);
-		purgeElement(&r);
-		purgeTree(root);
+		/*purgeElement(&r);
+		purgeTree(root);*/
 	}
-if( strcmp(node->value,"1") != 0)return(505);
+if( strncmp(node->value,"1",1) != 0)return(505);
 return(200);
 }
 int version2(char *p){
@@ -168,21 +168,21 @@ int version2(char *p){
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
 		if(tok->next!=NULL)return(400);
-		purgeElement(&r);
-		purgeTree(root);
 	}
 
-	if( strcmp(node->value,"1") != 0 && strcmp(node->value,"0")!=0)return(505);
-	if(strcmp(node->value,"1")!=0){
+	if( strncmp(node->value,"HTTP/1.1",8) != 0 && strncmp(node->value,"HTTP/1.0",8)!=0)return(505);
+	if(strncmp(node->value,"HTTP/1.1",8)==0){
 		ra=BigHost("Host");
+		
 		if(ra==0)return(400);
-		val=host("IP-litteral");
+		val=host("IP_litteral");
 		if(val!=0)return(501);
 	}
-	if(strcmp(node->value,"0")!=0){
+	if(strncmp(node->value,"HTTP/1.0",8)==0){
 		ra=BigHost("Host");
+		//printf("%d\n",ra);
 		if(ra!=0){
-		val=host("IP-litteral");
+		val=host("IP_litteral");
 		if(val!=0)  return(501);
 		}
 
@@ -201,11 +201,11 @@ int method(char *p){
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
 		if(tok->next!=NULL)return(400);
+		
+if(strncmp(node->value,"GET",3)!=0 && strncmp(node->value, "HEAD",4)!=0 && strncmp(node->value , "POST", 4)!=0){return(501);}
 
-printf("Ici?: \n");
-if(strncmp(node->value,"GET",node->len)!=0 && strncmp(node->value, "HEAD",node->len)!=0 && strncmp(node->value , "POST", node->len)!=0)return(501);
-printf("Ici2?\n");
 }
+
 return(200);
 }
 
@@ -222,10 +222,10 @@ int contentlenght(char* p){
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
 		if(tok->next!=NULL)return(400);
-		purgeElement(&r);
-		purgeTree(root);
+		
+		
 	}
-	if(TransferEnco("Transfer-Encoding") == 1){return(400);}
+	if(TransferEnco("Transfer_Encoding") == 1){return(400);}
 return(200);
 }
 
@@ -251,13 +251,13 @@ int TransferEnco(char *p){
 			coucou[i-1]=mem[i];
 		}
 		if(strcmp(coucou , " chunked") != 0){
-			if( Connection2("connection-option") != 1){
+			if( Connection2("connection_option") != 1){
 			return(400);
 			}
 		}
-		if(contentlenght("Content-lenght") == 1){return(400);}
-		purgeElement(&r);
-		purgeTree(root);
+		if(contentlenght("Content_length") == 1){return(400);}
+		/*purgeElement(&r);
+		purgeTree(root);*/
 	}
 return(200);
 }
@@ -269,12 +269,11 @@ int cookie(char*p){
 	root=getRootTree();
 	if (p != NULL) {
 		r=searchTree(root,p);
+		if(r==NULL)return(200);
 		tok=r;
 		node=(Lnode *)tok->node;
 		printf("%s --> FOUND [%.*s]\n",node->name,node->len,node->value);
 
-		purgeElement(&r);
-		purgeTree(root);
 }
 if(tok->next!=NULL)return(400);
 
@@ -323,8 +322,8 @@ int mediarange(char* p, char* monfichier){
 		if(ra==-1)return(400);
 		tok=tok->next;
 		}
-		purgeElement(&r);
-		purgeTree(root);
+		/*purgeElement(&r);
+		purgeTree(root);*/
 	}
 
 return(200);
@@ -333,25 +332,30 @@ int Verification(){
 	int ver;
 	int conn=200;
 	if( (ver=method("method")) != 200  ) return(ver);
-	if( (ver=originform("origin-form")) != 200  ) return(ver);
-	if( (ver=version1("MAJ")) != 200  ) return(ver);
-	if( (ver=version2("MIN")) != 200  ) return(ver);
+	
+	if( (ver=originform("origin_form")) != 200  ) return(ver);
+	
+
+	if( (ver=version2("HTTP_version")) != 200  ) return(ver);
+	printf("coidifnze\n");
 	if( (ver=cookie("Cookie")) != 200  ) return(ver);
-	if( (ver=contentlenght("Content-Lenght")) != 200 && (ver!=1)){return(conn);}
-	if( (conn=TransferEnco("Transfer-Encoding")) != 200  &&  (conn!=1)){return(ver);}
-	if( (ver=mediarange("media-range","accept-types.txt") !=200 ))return(ver);
+	printf("testé");
+	if( (ver=contentlenght("Content_Length")) != 200 && (ver!=1)){return(conn);}
+	if( (conn=TransferEnco("Transfer_Encoding")) != 200  &&  (conn!=1)){return(ver);}
+	if( (ver=mediarange("media_range","accept-types.txt") !=200 ))return(ver);
 	/* Test si les header ne sont pas en double >>> Bad Request*/
 	if( (ver=co("Connection") != 200)) return(ver);
 	if( (ver=co("Referer") != 200)) return(ver);
-	if( (ver=co("User-Agent") != 200)) return(ver);
+	if( (ver=co("User_Agent") != 200)) return(ver);
 	if( (ver=co("Host") != 200)) return(ver);
 	if( (ver=co("Accept") != 200)) return(ver);
-	if( (ver=co("Accept-Encoding") != 200)) return(ver);
+	if( (ver=co("Accept_Encoding") != 200)) return(ver);
 	return(conn);
 }
 
 
 char * returnInChar(int val){
+	printf("%d\n",val);
 	if (val == 501){
 		return "HTTP/1.1 501 Not Implemented\0";
 	}else if (val == 505){
@@ -363,4 +367,5 @@ char * returnInChar(int val){
 	}else{
 		return "HTTP/1.1 400 Bad Request\0";
 	}
+	
 }
