@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include "semantic.h"
 
-#define SUPERMAX 15000000
+#define SUPERMAX 1500000
 
 #define REPONSE "HTTP/1.0 200 OK\r\n\r\n"
 static long body_size;
@@ -38,7 +38,7 @@ char* server_fileToSend(char* file,int len) {
 
 	fread(sendbody, body_size, 1, f);
 	fclose(f);
-	strcat(sendbody, "\0");
+	memcpy(sendbody+body_size, "\0",1);
 	return sendbody;
 }
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 				printf("\n\nsendbody = '%s'\n", sendbody);
 				memcpy(rep+strlen(rep), "Content-Length: ",16);
 				sprintf(bla,"%d", body_size);
-				memcpy(rep+strlen(rep), bla, strlen(bla));
+				memcpy(rep+strlen(rep), bla, sizeof(bla));
 				memcpy(rep+strlen(rep), "\r\n\r\n",4);
 				memcpy(rep+strlen(rep), sendbody, body_size);
 
