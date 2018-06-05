@@ -14,7 +14,9 @@ application/octet-stream
 application/x-authorware-bin
 application/x-authorware-map
 application/x-authorware-seg
+application/xhtml+xml
 text/vnd.abc
+image/webp
 text/html
 video/animaflex
 application/postscript
@@ -53,7 +55,7 @@ application/octet-stream
 application/x-binary
 application/x-macbinary
 image/bmp
-image/bmp
+image/apng
 image/x-windows-bmp
 application/book
 application/book
