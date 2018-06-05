@@ -6,21 +6,21 @@
 #include <arpa/inet.h>
 #include "semantic.h"
 
-#define SUPERMAX 1500000
+#define SUPERMAX 15000000
 
 #define REPONSE "HTTP/1.0 200 OK\r\n\r\n"
 static long body_size;
 
 
 char* server_fileToSend(char* file,int len) {
-	char* sendbody;
+	//char* sendbody;
 	char* filename=(char*)calloc(100,sizeof(char));
 
 	if (file[0]=='/'){
-		strncpy(filename,file+1,len-1);
+		memcpy(filename,file+1,len-1);
 	}
 	else{
-		strncpy(filename,file,len);
+		memcpy(filename,file,len);
 	}
 	//printf(" filetruc %s\n",filename);
 	FILE* f = fopen(filename, "rb");
@@ -32,9 +32,9 @@ char* server_fileToSend(char* file,int len) {
 	body_size = ftell(f);
 	printf("\nLA TAILLE DU FICHIIIIIIIIIIEEEEEEEERRRRRRR   %d\n", body_size);
 	fseek(f, 0, SEEK_SET);
-
-	if((sendbody = malloc(body_size + 1)) == NULL)
-	exit(1);
+	char* sendbody = (char*)calloc(body_size+1, sizeof(char));
+	//if((sendbody = calloc(body_size + 1)) == NULL)
+	//exit(1);
 
 	fread(sendbody, body_size, 1, f);
 	fclose(f);
@@ -78,8 +78,8 @@ int main(int argc, char *argv[])
 				Lnode* r2 = (Lnode*)tmp2->node;
 				target = r2->value;
 				//printf("%s\n", target);
-				strcpy(sendbody, server_fileToSend(target,r2->len));
-				printf("\n\nsendbody = %s\n", sendbody);
+				char* sendbody = server_fileToSend(target,r2->len);
+				printf("\n\nsendbody = '%s'\n", sendbody);
 				memcpy(rep+strlen(rep), "Content-Length: ",16);
 				sprintf(bla,"%d", body_size);
 				memcpy(rep+strlen(rep), bla, strlen(bla));
