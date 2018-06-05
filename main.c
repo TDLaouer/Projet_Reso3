@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include "semantic.h"
 
-#define SUPERMAX 100000
+#define SUPERMAX 1500000
 
 #define REPONSE "HTTP/1.0 200 OK\r\n\r\n"
 static long body_size;
@@ -14,7 +14,7 @@ static long body_size;
 
 char* server_fileToSend(char* file,int len) {
 	char* sendbody;
-	char* filename=(char*)calloc(SUPERMAX,sizeof(char));
+	char* filename=(char*)calloc(100,sizeof(char));
 
 	if (file[0]=='/'){
 		strncpy(filename,file+1,len-1);
@@ -22,7 +22,7 @@ char* server_fileToSend(char* file,int len) {
 	else{
 		strncpy(filename,file,len);
 	}
-	printf(" filetruc %s\n",filename);
+	//printf(" filetruc %s\n",filename);
 	FILE* f = fopen(filename, "rb");
 	if(f == NULL) {
 		f = fopen("www/notfound.html", "rb");
@@ -30,7 +30,7 @@ char* server_fileToSend(char* file,int len) {
 
 	fseek(f, 0, SEEK_END);
 	body_size = ftell(f);
-	printf("%d\n", body_size);
+	printf("\nLA TAILLE DU FICHIIIIIIIIIIEEEEEEEERRRRRRR   %d\n", body_size);
 	fseek(f, 0, SEEK_SET);
 
 	if((sendbody = malloc(body_size + 1)) == NULL)
@@ -62,24 +62,29 @@ int main(int argc, char *argv[])
 		char *rep = (char*)malloc(SUPERMAX*sizeof(char));
 		strncpy(rep, returnInChar(Verification()), SUPERMAX);
 
-		if (strcmp(rep, "HTTP/1.1 200 OK\r\nConnection: keep-alive\0") == 0 || strcmp(rep, "HTTP/1.1 200 OK\r\nConnection: close\0") == 0)
+		if (strcmp(rep, "HTTP/1.1 200 OK\r\nConnection: keep-alive\r\n") == 0 || strcmp(rep, "HTTP/1.1 200 OK\r\nConnection: close\r\n") == 0)
 		{
 			_Token * tmp;
+			char * bla=malloc(MAX*sizeof(char));
 			tmp = searchTree(getRootTree(),"method");
 			Lnode * r = (Lnode*)tmp->node;
 			int* lenMethod = 0;
 			char* method = getElementValue(tmp->node ,lenMethod);
-			printf("oui ? %s\n", method);
+			//printf("oui ? %s\n", method);
 			if (strncmp(method, "GET",3) == 0)
 			{
 				_Token * tmp2;
 				tmp2 = searchTree(getRootTree(), "request_target");
 				Lnode* r2 = (Lnode*)tmp2->node;
 				target = r2->value;
-				printf("%s\n", target);
+				//printf("%s\n", target);
 				strcpy(sendbody, server_fileToSend(target,r2->len));
-
-				strcat(rep, sendbody);
+				printf("\n\nsendbody = %s\n", sendbody);
+				memcpy(rep+strlen(rep), "Content-Length: ",16);
+				sprintf(bla,"%d", body_size);
+				memcpy(rep+strlen(rep), bla, strlen(bla));
+				memcpy(rep+strlen(rep), "\r\n\r\n",4);
+				memcpy(rep+strlen(rep), sendbody, body_size);
 
 			}
 		}
