@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "semantic.h"
+#include "socket.h"
 
 #define SUPERMAX 1500000
 
@@ -12,33 +13,71 @@
 static long body_size;
 
 
-char* server_fileToSend(char* file,int len) {
-	//char* sendbody;
-	char* filename=(char*)calloc(100,sizeof(char));
+void PHP(char* file,int len) {
 
+
+
+
+}
+
+
+
+char* server_fileToSend(char* file,int len) {
+	char* sendbody;
+	_Token *r,*tok;
+	Lnode * root=getRootTree(),*n;
+	int i=0;
+
+	// si les 3e derniers caractères de file sont "php", alors on fait le fastCGI
+	if (strcmp(file + len - 3, "php") {
+		PHP(file, len);
+		return NULL;
+	}
+
+
+	char* filename=(char*)calloc(SUPERMAX,sizeof(char));
+	r=searchTree(root,"Host");
+	tok=r;
+	if (tok!=NULL){
+		n=(Lnode*) tok->node;
+		strncpy(filename,n->value, n->len);
+		i=n->len;
+	}
 	if (file[0]=='/'){
-		memcpy(filename,file+1,len-1);
+		if (i!=0){
+			strncpy(filename+i,file,len);
+		}
+		else{
+			strncpy(filename+i,file+1,len-1);
+		}
 	}
 	else{
-		memcpy(filename,file,len);
+		strncpy(filename,file,len);
 	}
-	//printf(" filetruc %s\n",filename);
+	strncat(filename,"\0",1);
+	printf("filetruc : '%s'\n",filename);
 	FILE* f = fopen(filename, "rb");
 	if(f == NULL) {
 		f = fopen("www/notfound.html", "rb");
 	}
-
 	fseek(f, 0, SEEK_END);
 	body_size = ftell(f);
-	printf("\nLA TAILLE DU FICHIIIIIIIIIIEEEEEEEERRRRRRR   %d\n", body_size);
+	printf("\nla taille du fichier %d\n", body_size);
 	fseek(f, 0, SEEK_SET);
-	char* sendbody = (char*)calloc(body_size+1, sizeof(char));
-	//if((sendbody = calloc(body_size + 1)) == NULL)
-	//exit(1);
 
-	fread(sendbody, body_size, 1, f);
+	if((sendbody = malloc(body_size + 1)) == NULL)
+	{
+		sendbody = malloc(20*sizeof(char));
+		sendbody ="this is a directory\0";
+		body_size=20;
+		return sendbody;
+	}
+
+	else{
+		fread(sendbody, body_size, 1, f);
+		strcat(sendbody, "\0");
+	}
 	fclose(f);
-	memcpy(sendbody+body_size, "\0",1);
 	return sendbody;
 }
 
@@ -57,10 +96,10 @@ int main(int argc, char *argv[])
 		printf("#########################################\nDemande recue depuis le client %d\n",requete->clientId);
 		printf("Client [%d] [%s:%d]\n",requete->clientId,inet_ntoa(requete->clientAddress->sin_addr),htons(requete->clientAddress->sin_port));
 		printf("Contenu de la demande %.*s\n\n",requete->len,requete->buf);
-
 		int r = parseur(requete->buf, requete->len);
 		char *rep = (char*)malloc(SUPERMAX*sizeof(char));
 		strncpy(rep, returnInChar(Verification()), SUPERMAX);
+		printf("reponse:%s\n",rep);
 
 		if (strcmp(rep, "HTTP/1.1 200 OK\r\nConnection: keep-alive\r\n") == 0 || strcmp(rep, "HTTP/1.1 200 OK\r\nConnection: close\r\n") == 0)
 		{
@@ -78,13 +117,17 @@ int main(int argc, char *argv[])
 				Lnode* r2 = (Lnode*)tmp2->node;
 				target = r2->value;
 				//printf("%s\n", target);
-				char* sendbody = server_fileToSend(target,r2->len);
-				printf("\n\nsendbody = '%s'\n", sendbody);
+				strcpy(sendbody, server_fileToSend(target,r2->len));
+				printf("\n\nsendbody = %s\n", sendbody);
 				memcpy(rep+strlen(rep), "Content-Length: ",16);
+
 				sprintf(bla,"%d", body_size);
-				memcpy(rep+strlen(rep), bla, sizeof(bla));
+
+				memcpy(rep+strlen(rep), bla, strlen(bla));
 				memcpy(rep+strlen(rep), "\r\n\r\n",4);
+				printf("rr\n");
 				memcpy(rep+strlen(rep), sendbody, body_size);
+
 
 			}
 		}
@@ -94,7 +137,6 @@ int main(int argc, char *argv[])
 
 			reponse->len=strlen(rep);
 			printf("-----------Réponse-------------------\n%.*s", reponse->len, rep);
-
 			// attention reponse->buf doit aussi pointer vers un espace memoire valide.
 			if ((reponse->buf=malloc(strlen(rep))) != NULL ) {
 
