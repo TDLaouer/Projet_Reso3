@@ -10,28 +10,35 @@
 #define SUPERMAX 1500000
 
 #define REPONSE "HTTP/1.0 200 OK\r\n\r\n"
+#define ABSOLU "/home/userir/Downloads/Files"
+#define ABSOLU_LEN 28
 static long body_size;
-
-
-void PHP(char* file,int len) {
-
-
-
-
-}
-
+static int php_used =0;
 
 
 char* server_fileToSend(char* file,int len) {
-	char* sendbody;
+	char* sendbody, *chemin = malloc(MAX*sizeof(char));
 	_Token *r,*tok;
 	Lnode * root=getRootTree(),*n;
 	int i=0;
 
 	// si les 3e derniers caractères de file sont "php", alors on fait le fastCGI
-	if (strcmp(file + len - 3, "php") {
-		PHP(file, len);
-		return NULL;
+
+	if (strncmp(file + len - 4, ".php", 4) == 0) {
+		FILE *f;
+		r=searchTree(root,"method");
+		n= r->node;
+		strncpy(chemin, ABSOLU, ABSOLU_LEN);
+		strncat(chemin+ABSOLU_LEN,file, len);
+		if (strncmp(n->value, "GET", n->len)==0){
+			PHP(file, 1);
+		}else {
+			PHP(file, 0);
+		}
+		f = fopen("fichierSortie", "r");
+		fread(sendbody, body_size, 1, f);
+		php_used=1;
+		return "bolablabla";
 	}
 
 
@@ -40,8 +47,8 @@ char* server_fileToSend(char* file,int len) {
 	tok=r;
 	if (tok!=NULL){
 		n=(Lnode*) tok->node;
-		strncpy(filename,n->value, n->len);
-		i=n->len;
+		/*strncpy(filename,n->value, n->len);
+		i=n->len;*/
 	}
 	if (file[0]=='/'){
 		if (i!=0){
@@ -124,8 +131,12 @@ int main(int argc, char *argv[])
 				sprintf(bla,"%d", body_size);
 
 				memcpy(rep+strlen(rep), bla, strlen(bla));
-				memcpy(rep+strlen(rep), "\r\n\r\n",4);
-				printf("rr\n");
+				if (php_used)
+				{
+					php_used = 0;
+					memcpy(rep+strlen(rep), "\r\n",2);
+				}
+				else memcpy(rep+strlen(rep), "\r\n\r\n",4);
 				memcpy(rep+strlen(rep), sendbody, body_size);
 
 

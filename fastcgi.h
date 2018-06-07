@@ -1,4 +1,4 @@
-/* Taken from FCGI specification and adapted */ 
+/* Taken from FCGI specification and adapted */
 
 #define FASTCGILENGTH 0xffff
 
@@ -16,7 +16,7 @@ typedef struct __attribute__((__packed__)) {
     unsigned short contentLength;
     unsigned char paddingLength;
     unsigned char reserved;
-    char contentData[FASTCGILENGTH]; 
+    char contentData[FASTCGILENGTH];
 } FCGI_Header;
 
 #define FCGI_HEADER_SIZE           8
@@ -45,7 +45,7 @@ typedef struct __attribute__((__packed__)) {
 
 
 typedef struct __attribute__((__packed__)) {
-            unsigned char type;    
+            unsigned char type;
             unsigned char reserved[7];
 } FCGI_UnknownTypeBody;
 
@@ -89,4 +89,3 @@ typedef struct __attribute__((__packed__)) {
 #define FCGI_RESPONDER  1
 #define FCGI_AUTHORIZER 2
 #define FCGI_FILTER     3
-
