@@ -32,9 +32,9 @@ char* server_fileToSend(char* file,int len) {
 		strncpy(chemin, ABSOLU, ABSOLU_LEN);
 		strncat(chemin+ABSOLU_LEN,file, len);
 		if (strncmp(n->value, "GET", n->len)==0){
-			pointeur = PHP(file, 1);
+			pointeur = PHP(chemin, 1);
 		}else {
-			pointeur = PHP(file, 0);
+			pointeur = PHP(chemin, 0);
 		}
 		strncat(pointeur, "\0", 1);
 
