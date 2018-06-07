@@ -1,7 +1,7 @@
 BIN = executable
 CC = gcc
-OBJECTS = main.o semantic.o
-CFLAGS = -Wall -pedantic
+OBJECTS = main.o semantic.o socket.o
+CFLAGS = -Wall -pedantic -std=c99
 
 export LD_LIBRARY_PATH=.
 
@@ -13,6 +13,9 @@ main.o: main.c
 
 semantic.o: semantic.c semantic.h
 	$(CC) -c semantic.c $(CFLAGS) -o semantic.o
+
+socket.o: socket.c socket.h
+	$(CC) -c socket.c $(CFLAGS) -o socket.o
 
 clean:
 	rm *.o

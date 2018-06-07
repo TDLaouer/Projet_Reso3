@@ -1,4 +1,3 @@
-
 #include "semantic.h"
 
 // Connection("connection-option")
@@ -158,6 +157,7 @@ int version1(char *p){
 if( strncmp(node->value,"1",1) != 0)return(505);
 return(200);
 }
+
 int version2(char *p){
 	_Token *r,*tok;
 	Lnode *root;Lnode *node;
@@ -282,12 +282,12 @@ return(200);
 }
 
 
+
 int lecturefich(char *monFichier, char* montype, int len){
 	FILE* fichier;
 	char chaine[MAX]="";
 	fichier=fopen(monFichier,"r");
-	if(fichier==NULL)
-	{
+	if(fichier==NULL){
 		perror("Probleme ouverture fichier");
 		exit(1);
 	}
@@ -302,6 +302,8 @@ int lecturefich(char *monFichier, char* montype, int len){
 	return (-1);
 
 }
+
+
 
 
 int mediarange(char* p, char* monfichier){

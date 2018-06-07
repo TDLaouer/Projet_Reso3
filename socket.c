@@ -1,26 +1,25 @@
 #include "socket.h"
 
 
-void liresocket(int fd,char* file){
+char* liresocket(int fd){
 
 	int r;
+	char* message = malloc(SUPERMAX*sizeof(char));
 	int vraie_taille=0;
 	int w=0;
 	char headertruc[8];
-	FILE* monfichier= fopen(file,"w");
 	while (w<8)
 	{
 		w+= read(fd, headertruc, 8);
 	}
 	vraie_taille = headertruc[4]*16 + headertruc[5]  + headertruc[6];
-	while (vraie_taille) {
-	do {
-			r= read(fd, monfichier,vraie_taille);
-		} while (r == -1 && errno == EINTR);
-	vraie_taille-=r;
+	while (vraie_taille>0){
+		r = read(fd, message, vraie_taille);
+		vraie_taille -=r;
 	}
-
-	fclose(monfichier);
+	strncat(message, "\0", 1);
+	printf("Message retourné : '%s'\n", message);
+	return message;
 }
 
 void sendpara(int fd, unsigned short requestID,char* script){
@@ -30,8 +29,10 @@ void sendpara(int fd, unsigned short requestID,char* script){
 	h.requestId=1   /*htons(requestID)*/;
 	h.contentLength=0;
 	h.paddingLength=0;
-	addNameValuePair(&h,"SCRIPT_FILENAME",script);
+	addNameValuePair(&h,"PATH",script);
+	addNameValuePair(&h,"FILE")
 	addNameValuePair(&h,"REQUEST_METHOD","GET");
+
 	writeSocket(fd,&h,FCGI_HEADER_SIZE+(h.contentLength)+(h.paddingLength));
 }
 
@@ -178,7 +179,7 @@ static int createSocket(int port)
 }
 
 // =========================================================================================================== //
-int PHP(char* p, int method)
+char* PHP(char* p, int method)
 {
 	int fd;
 	_Token* rbody; Lnode* n, *root;
@@ -195,7 +196,5 @@ int PHP(char* p, int method)
 		sendStdin(fd,1,NULL,0);
 	}
 	sleep(1);
-	liresocket(fd,"fichierSortie");
-
-	return 0;
+	return liresocket(fd);
 }

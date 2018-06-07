@@ -1,6 +1,7 @@
 #ifndef SEMANTIC_H
 #define SEMANTIC_H
-#define MAX 150
+#define MAX 15000
+#define SUPERMAX 1500000
 #include "request.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +15,6 @@
 #include "semantic.h"
 // this will declare internal type used by the parser
 #include "httpparser.h"
-
 #include "api.h"
 
 int BigHost(char* p);
@@ -33,6 +33,6 @@ int Verification();
 int mediarange(char* p, char* monfichier);
 int lecturefich(char *monFichier, char* montype, int len);
 int co(char*);
-char * returnInChar(int val);
+char* returnInChar(int val);
 
 #endif

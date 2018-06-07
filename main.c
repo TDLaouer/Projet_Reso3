@@ -26,19 +26,21 @@ char* server_fileToSend(char* file,int len) {
 
 	if (strncmp(file + len - 4, ".php", 4) == 0) {
 		FILE *f;
+		char* pointeur=malloc(SUPERMAX*sizeof(char));
 		r=searchTree(root,"method");
 		n= r->node;
 		strncpy(chemin, ABSOLU, ABSOLU_LEN);
 		strncat(chemin+ABSOLU_LEN,file, len);
 		if (strncmp(n->value, "GET", n->len)==0){
-			PHP(file, 1);
+			pointeur = PHP(file, 1);
 		}else {
-			PHP(file, 0);
+			pointeur = PHP(file, 0);
 		}
-		f = fopen("fichierSortie", "r");
-		fread(sendbody, body_size, 1, f);
+		strncat(pointeur, "\0", 1);
+
 		php_used=1;
-		return "bolablabla";
+		body_size = strlen(pointeur);
+		return pointeur;
 	}
 
 

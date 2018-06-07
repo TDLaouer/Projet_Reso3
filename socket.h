@@ -10,7 +10,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <strings.h>
 #include "fastcgi.h"
 #include "semantic.h"
@@ -31,10 +30,10 @@ void sendWebData(int fd,unsigned char type,unsigned short requestId,char *data,u
 
 static int createSocket(int port);
 
-void liresocket(int fd,char* file);
+char* liresocket(int fd);
 
 void sendpara(int fd, unsigned short requestID,char* script);
 
-int PHP(char* p, int method);
+char* PHP(char* p, int method);
 
 #endif
