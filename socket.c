@@ -11,8 +11,8 @@ char* liresocket(int fd){
 	while (w<8)
 	{
 		w+= read(fd, headertruc, 8);
-	}
-	vraie_taille = headertruc[4]*16 + headertruc[5]  + headertruc[6];
+	}	
+	vraie_taille = headertruc[3]*16 + (headertruc[4])  + -(headertruc[5]);
 	while (vraie_taille>0){
 		do{
 			r = read(fd, message, vraie_taille);

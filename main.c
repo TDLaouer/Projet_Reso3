@@ -10,8 +10,8 @@
 #define SUPERMAX 1500000
 
 #define REPONSE "HTTP/1.0 200 OK\r\n\r\n"
-#define ABSOLU "/home/userir/Downloads/Files"
-#define ABSOLU_LEN 28
+#define ABSOLU "/home/userir/Téléchargements/Files"
+#define ABSOLU_LEN 36
 static long body_size;
 static int php_used =0;
 
@@ -64,7 +64,7 @@ char* server_fileToSend(char* file,int len) {
 		strncpy(filename,file,len);
 	}
 	strncat(filename,"\0",1);
-	printf("filetruc : '%s'\n",filename);
+	//printf("filetruc : '%s'\n",filename);
 	FILE* f = fopen(filename, "rb");
 	if(f == NULL) {
 		f = fopen("www/notfound.html", "rb");

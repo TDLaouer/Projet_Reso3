@@ -1,4 +1,4 @@
-BIN = executable
+BIN = serveur
 CC = gcc
 OBJECTS = main.o semantic.o socket.o
 CFLAGS = -Wall -pedantic -std=c99
